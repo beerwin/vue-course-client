@@ -23,6 +23,7 @@ const clientStore = {
     actions: {
         loadItems: ({commit}) => {
             // TODO: implement Ajax request (install axios)
+            commit('setClients', []);
         }
     }
 }
