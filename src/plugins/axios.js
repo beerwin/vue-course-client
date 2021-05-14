@@ -58,4 +58,5 @@ Plugin.install = function(Vue) {
 
 Vue.use(Plugin)
 
+export {_axios};
 export default Plugin;

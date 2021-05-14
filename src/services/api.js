@@ -1,0 +1,1 @@
+export const apiUrl = (endpoint) => `http://localhost:3000/api${endpoint}`;
