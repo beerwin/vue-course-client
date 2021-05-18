@@ -1,4 +1,4 @@
-import { compareStrings } from '../services/compare.js';
+import { compareNumbers, compareStrings } from '../services/compare.js';
 import { _axios } from '../plugins/axios.js';
 import { apiUrl } from '../services/api.js';
 
@@ -14,24 +14,40 @@ const clientStore = {
                     name : 'name',
                     type: 'string',
                     direction: null
+                },
+                {
+                    name: 'createdAt',
+                    type: 'number',
+                    direction: null
                 }
             ],
+            searchText: '',
         }
     },
     getters: {
-        sortedClients: (state, getters) => {
-            const activeField = getters.sortField;
-            if (!activeField) {
+        filteredClients: (state) => {
+            if (!state.searchText) {
                 return state.clients;
             }
 
-            return [...state.clients].sort((a, b) => {
+            return state.clients.filter(c => c.name.toLowerCase().includes(state.searchText.toLowerCase()));
+        },
+        sortedClients: (state, getters) => {
+            const activeField = getters.sortField;
+            if (!activeField) {
+                return getters.filteredClients;
+            }
+
+            return [...getters.filteredClients].sort((a, b) => {
                 const firstField = a[activeField.name];
                 const secondField = b[activeField.name];
                 let result;
                 switch (activeField.type) {
                     default:
                     case 'string': result = compareStrings(firstField, secondField);
+                    break;
+                    case 'number': result = compareNumbers(firstField, secondField);
+                    break;
                 }
 
                 return result * (activeField.direction === 'desc' ? -1 : 1)
@@ -58,6 +74,7 @@ const clientStore = {
         clearSortFields: (state) => state.sortFields = state.sortFields.map(f => {
             return {...f, direction: null}
         }),
+        setSearchText: (state, value) => state.searchText = value,
     },
     actions: {
         loadItems: async ({commit}) => {
