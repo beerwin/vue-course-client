@@ -105,8 +105,8 @@
                 flex: 0 0 150px;
             }
             .crud-actions {
-                  align-self: end;
-                  flex: 0 1 auto;
+                  align-self: flex-end;
+                  flex: 1 1 auto;
                   text-align: right;
             }
         }
