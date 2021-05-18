@@ -2,7 +2,12 @@
     <div class="clients">
         <h1>Clients</h1>
         <div class="toolbar">
-            <input type="text" v-model="internalSearchText" placeholder="Search" />
+            <div class="toolbar-main">
+                <input type="text" v-model="internalSearchText" placeholder="Search" />
+            </div>
+            <div class="toolbar-right">
+                <button>Create</button>
+            </div>
         </div>
         <div class="crud-list" v-if="!loading">
             <div class="crud-list-header">
@@ -129,6 +134,22 @@
                     background-color: transparent;
                 }
             }
+        }
+    }
+
+    .toolbar {
+        display: flex;
+        flex-direction: row;
+        border-bottom: 1px solid #cccccc;
+        padding-bottom: 10px;
+        margin-bottom: 5px;
+        .toolbar-main {
+            flex: 1 1 0;
+            text-align: left;
+        }
+        .toolbar-right {
+            flex: 1 0 auto;
+            text-align: right;
         }
     }
 </style>
