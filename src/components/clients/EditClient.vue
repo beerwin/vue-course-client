@@ -48,7 +48,7 @@
             }
         },
         methods: {
-            ...mapActions('clientStore', ['newClient', 'loadClient', 'storeClient']),
+            ...mapActions('clientStore', ['newClient', 'loadClient', 'storeClient', 'updateClient']),
             ...mapMutations('clientStore', ['setClient', 'setLoading', 'setClientName', 'setClientDescription']),
             async save() {
                 if (this.client.id) {

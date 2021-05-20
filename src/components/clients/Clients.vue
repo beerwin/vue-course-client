@@ -34,7 +34,8 @@
                         <date-time-display :date="new Date(client.createdAt)" />
                     </div>
                     <div class="crud-actions">
-                        Edit, Delete
+                        <router-link :to="{name: 'EditClient', params: {'client': client.id}}">Edit</router-link> |
+                        Delete
                     </div>
                 </div>
             </div>

@@ -33,6 +33,7 @@ const clientStore = {
     mutations: {
         setClient: (state, value) => state.client = value,
         setLoading: (state, value) => state.loading = value,
+        setSaving: (state, value) => state.saving = value,
         setClientName: (state, value) => state.client.name = value,
         setClientDescription: (state, value) => state.client.description = value,
     },
