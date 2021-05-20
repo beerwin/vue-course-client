@@ -35,22 +35,32 @@
                     </div>
                     <div class="crud-actions">
                         <router-link :to="{name: 'EditClient', params: {'client': client.id}}">Edit</router-link> |
-                        Delete
+                        <span class="delete-client" @click="deleteClientInternal(client.id)">Delete</span>
                     </div>
                 </div>
             </div>
         </div>
         <div class="loader" v-else>Loading...</div>
+        <confirm-dialog ref="confirm">
+            <template v-slot:title>
+                <strong>Delete item</strong>
+            </template>
+            <p>Would you like to delete this item?</p>
+            <template v-slot:secondary>
+                You'll lose it!
+            </template>
+        </confirm-dialog>
     </div>
 </template>
 
 <script>
     import { mapActions, mapGetters, mapMutations, mapState } from 'vuex';
     import DateTimeDisplay from '../controls/DateTimeDisplay';
+    import ConfirmDialog from '../modals/ConfirmDialog.vue';
 
     export default {
         name: 'Clients',
-        components: {DateTimeDisplay},
+        components: {ConfirmDialog, DateTimeDisplay},
         data() {
             return {
                 loading: false,
@@ -69,10 +79,10 @@
             }
         },
         methods: {
-            ...mapActions('clientListStore', ['loadItems']),
+            ...mapActions('clientListStore', ['loadItems', 'deleteClient']),
             ...mapMutations('clientListStore', ['setSortField', 'setSearchText']),
             async loadClients() {
-                this.loading = false;
+                this.loading = true;
                 await this.loadItems();
                 this.loading = false;
             },
@@ -88,6 +98,16 @@
                 }
                 this.setSortField(sortField);
             },
+            async deleteClientInternal(id) {
+                const response = await this.$refs.confirm.open();
+                if (!response) {
+                    return;
+                }
+                await this.deleteClient(id);
+                setTimeout(() => {
+                    this.loadClients();
+                }, 1000);
+            }
         },
         mounted() {
             this.loadClients();
@@ -133,6 +153,9 @@
                 }
                 &:nth-child(even) {
                     background-color: transparent;
+                }
+                .delete-client {
+                  cursor: pointer;
                 }
             }
         }

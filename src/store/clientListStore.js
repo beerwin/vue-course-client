@@ -84,6 +84,9 @@ const clientListStore = {
         updateSortField: ({commit}, value) => {
             commit('clearSortFields');
             commit('setSortField', value);
+        },
+        deleteClient: async (instance, payload) => {
+            await _axios.delete(apiUrl(`/clients/${payload}`));
         }
     }
 }
