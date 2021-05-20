@@ -6,7 +6,7 @@
                 <input type="text" v-model="internalSearchText" placeholder="Search" />
             </div>
             <div class="toolbar-right">
-                <router-link :to="{name: 'CreateClient'}">Create</router-link>
+                <router-link :to="{name: 'CreateClient'}" class="tool-link">Create</router-link>
             </div>
         </div>
         <div class="crud-list" v-if="!loading">
@@ -34,8 +34,8 @@
                         <date-time-display :date="new Date(client.createdAt)" />
                     </div>
                     <div class="crud-actions">
-                        <router-link :to="{name: 'EditClient', params: {'client': client.id}}">Edit</router-link> |
-                        <span class="delete-client" @click="deleteClientInternal(client.id)">Delete</span>
+                        <router-link class="tool-link" :to="{name: 'EditClient', params: {'client': client.id}}">Edit</router-link>
+                        <span class="delete-client tool-link red" @click="deleteClientInternal(client.id)">Delete</span>
                     </div>
                 </div>
             </div>
