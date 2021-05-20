@@ -24,6 +24,16 @@ const routes = [
     name: 'Clients',
     component: Clients
   },
+  {
+    path: '/clients/new',
+    name: 'CreateClient',
+    component: () => import(/* webpackChunkName: "edit-client" */ '../components/clients/EditClient.vue')
+  },
+  {
+    path: '/clients/:client',
+    name: 'EditClient',
+    component: () => import(/* webpackChunkName: "edit-client" */ '../components/clients/EditClient.vue')
+  }
 ]
 
 const router = new VueRouter({

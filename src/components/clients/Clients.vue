@@ -6,7 +6,7 @@
                 <input type="text" v-model="internalSearchText" placeholder="Search" />
             </div>
             <div class="toolbar-right">
-                <button>Create</button>
+                <router-link :to="{name: 'CreateClient'}">Create</router-link>
             </div>
         </div>
         <div class="crud-list" v-if="!loading">
@@ -56,8 +56,8 @@
             }
         },
         computed: {
-            ...mapState('clientStore', ['searchText']),
-            ...mapGetters('clientStore', ['sortedClients', 'sortField', 'namedSortField', 'sortedByAsc', 'sortedByDesc']),
+            ...mapState('clientListStore', ['searchText']),
+            ...mapGetters('clientListStore', ['sortedClients', 'sortField', 'namedSortField', 'sortedByAsc', 'sortedByDesc']),
             internalSearchText: {
                 get() {
                     return this.searchText;
@@ -68,8 +68,8 @@
             }
         },
         methods: {
-            ...mapActions('clientStore', ['loadItems']),
-            ...mapMutations('clientStore', ['setSortField', 'setSearchText']),
+            ...mapActions('clientListStore', ['loadItems']),
+            ...mapMutations('clientListStore', ['setSortField', 'setSearchText']),
             async loadClients() {
                 this.loading = false;
                 await this.loadItems();

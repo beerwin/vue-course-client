@@ -1,11 +1,13 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import clientStore from './clientStore';
+import clientListStore from './clientListStore';
+import clientStore from './clientStore.js';
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   modules: {
-    clientStore
+    clientListStore: clientListStore,
+    clientStore: clientStore
   }
 })

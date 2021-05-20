@@ -1,89 +1,66 @@
-import { compareNumbers, compareStrings } from '../services/compare.js';
-import { _axios } from '../plugins/axios.js';
+import {_axios} from '../plugins/axios';
 import { apiUrl } from '../services/api.js';
-
-const findSortField = (state, name) => state.sortFields.find(f => f.name === name);
 
 const clientStore = {
     namespaced: true,
-    state: () => {
+    state() {
         return {
-            clients: [],
-            sortFields:[
-                {
-                    name : 'name',
-                    type: 'string',
-                    direction: null
-                },
-                {
-                    name: 'createdAt',
-                    type: 'number',
-                    direction: null
-                }
-            ],
-            searchText: '',
+            client: {
+                id: null,
+                name: '',
+                description: '',
+                createdAt: null
+            },
+            loading: false,
+            saving: false,
         }
     },
     getters: {
-        filteredClients: (state) => {
-            if (!state.searchText) {
-                return state.clients;
+        validationErrors: (state) => {
+            const errors = {length: 0};
+            if (!state.client.name) {
+                errors['name'] = 'The name field is required';
+                ++errors.length;
+            }
+            if (!state.client.description) {
+                errors['description'] = 'The description field is required';
+                ++errors.length;
             }
 
-            return state.clients.filter(c => c.name.toLowerCase().includes(state.searchText.toLowerCase()));
-        },
-        sortedClients: (state, getters) => {
-            const activeField = getters.sortField;
-            if (!activeField) {
-                return getters.filteredClients;
-            }
-
-            return [...getters.filteredClients].sort((a, b) => {
-                const firstField = a[activeField.name];
-                const secondField = b[activeField.name];
-                let result;
-                switch (activeField.type) {
-                    default:
-                    case 'string': result = compareStrings(firstField, secondField);
-                    break;
-                    case 'number': result = compareNumbers(firstField, secondField);
-                    break;
-                }
-
-                return result * (activeField.direction === 'desc' ? -1 : 1)
-            });
-        },
-        sortField: (state) => {
-            return state.sortFields.find(f => f.direction != null);
-        },
-        namedSortField: (state) => (name) => findSortField(state, name),
-        sortedByDesc: (state) => (name) => {
-            const sortField = findSortField(state, name);
-            return sortField && sortField.direction === 'desc';
-        },
-        sortedByAsc: (state) => (name) => {
-            const sortField = findSortField(state, name);
-            return sortField && sortField.direction === 'asc';
+            return errors;
         }
     },
     mutations: {
-        setClients: (state, value) => state.clients = value,
-        setSortField: (state, value) => {
-            state.sortFields = state.sortFields.map(f => f.name === value.name ? value : f);
-        },
-        clearSortFields: (state) => state.sortFields = state.sortFields.map(f => {
-            return {...f, direction: null}
-        }),
-        setSearchText: (state, value) => state.searchText = value,
+        setClient: (state, value) => state.client = value,
+        setLoading: (state, value) => state.loading = value,
+        setClientName: (state, value) => state.client.name = value,
+        setClientDescription: (state, value) => state.client.description = value,
     },
     actions: {
-        loadItems: async ({commit}) => {
-            const {data} = await _axios.get(apiUrl('/clients'));
-            commit('setClients', data);
+        loadClient: async ({commit}, id) => {
+            commit('setLoading', true);
+            const response = await _axios.get(apiUrl(`/clients/${id}`));
+            commit ('setClient', response.data);
+            commit ('setLoading', false);
         },
-        updateSortField: ({commit}, value) => {
-            commit('clearSortFields');
-            commit('setSortField', value);
+        storeClient: async ({commit}, payload) => {
+            commit('setSaving', true);
+            const response = await _axios.post(apiUrl('/clients'), payload);
+            commit('setSaving', false);
+            return response.data.id;
+        },
+        updateClient: async ({commit}, payload) => {
+            commit('setSaving', true);
+            await _axios.put(apiUrl(`/clients/${payload.id}`), payload);
+            commit('setSaving', false);
+        },
+        newClient: ({commit}) => {
+            commit('setClient', {
+                id: null,
+                name: '',
+                description: '',
+                createdAt: null,
+            })
         }
     }
 }
